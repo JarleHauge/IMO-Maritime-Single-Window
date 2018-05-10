@@ -1,5 +1,9 @@
 # IMO-Maritime-Single-Window
 
+## Prerequisites
+* [npm](https://www.npmjs.com/get-npm)
+* [chocolatey](https://chocolatey.org/install)
+
 Open a CMD window with administrator rights and run:
 
 ```
