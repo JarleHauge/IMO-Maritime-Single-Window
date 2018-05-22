@@ -41,11 +41,6 @@ namespace IMOMaritimeSingleWindow.Controllers
             return Json(newShip);
         }
 
-        private bool SearchContainsOnlyDigits(string str)
-        {
-            return str.All(c => c >= '0' && c <= '9');
-        }
-
         public List<Ship> SearchShip(string searchTerm)
         {
             if (searchTerm.All(c => c >= '0' && c <= '9'))   // Checks if search only contains numbers
@@ -59,6 +54,7 @@ namespace IMOMaritimeSingleWindow.Controllers
                             .Select(s => s)
                             .Include(s => s.ShipStatus)
                             .Include(s => s.ShipContact)
+                            .Include(s => s.ShipFlagCode.Country)
                             .Take(10)
                             .ToList();
             }
@@ -69,6 +65,7 @@ namespace IMOMaritimeSingleWindow.Controllers
                         .Select(s => s)
                         .Include(s => s.ShipStatus)
                         .Include(s => s.ShipContact)
+                        .Include(s => s.ShipFlagCode.Country)
                         .Take(10)
                         .ToList();
         }
@@ -78,33 +75,7 @@ namespace IMOMaritimeSingleWindow.Controllers
         {
 
             List<Ship> results = SearchShip(searchTerm);
-            List<ShipOverview> resultList = new List<ShipOverview>();
-
-            foreach (Ship s in results)
-            {
-
-                ShipOverview searchItem = new ShipOverview();
-                searchItem.Ship = s;
-
-                // Find country id so we can get the country's 2CC which is used to add flags
-                var cId = (from sfc in _context.ShipFlagCode
-                           where sfc.ShipFlagCodeId == s.ShipFlagCodeId
-                           select sfc.CountryId).FirstOrDefault();
-
-                searchItem.Country = (from c in _context.Country
-                                      where c.CountryId == cId
-                                      select c).FirstOrDefault();
-
-                searchItem.ShipType = (from st in _context.ShipType
-                                       where st.ShipTypeId == s.ShipTypeId
-                                       select st).FirstOrDefault();
-
-                searchItem.ShipStatus = s.ShipStatus;
-                searchItem.ContactList = s.ShipContact.ToList();
-                resultList.Add(searchItem);
-
-            }
-            return Json(resultList);
+            return Json(results);
         }
 
         [HttpGet("{id}")]
