@@ -30,18 +30,7 @@ namespace IMOMaritimeSingleWindow.Controllers
                                             .Take(10)
                                             .ToList();
 
-            List<CountrySearchResult> resultList = new List<CountrySearchResult>();
-
-            foreach (Country c in countries)
-            {
-                CountrySearchResult searchItem = new CountrySearchResult();
-                searchItem.Country = c;
-
-                searchItem.ShipFlagCodes = c.ShipFlagCode.ToList();
-
-                resultList.Add(searchItem);
-            }
-            return Json(resultList);
+            return Json(countries);
         }
 
         [HttpGet("getall")]
