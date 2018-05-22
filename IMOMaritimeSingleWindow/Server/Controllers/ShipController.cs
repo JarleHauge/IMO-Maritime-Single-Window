@@ -40,16 +40,37 @@ namespace IMOMaritimeSingleWindow.Controllers
             }
             return Json(newShip);
         }
-        
+
+        private bool SearchContainsOnlyDigits(string str)
+        {
+            return str.All(c => c >= '0' && c <= '9');
+        }
+
         public List<Ship> SearchShip(string searchTerm)
         {
-
-            return (from s in _context.Ship
-                    where EF.Functions.ILike(s.Name, searchTerm + '%')
-                    || EF.Functions.ILike(s.CallSign, searchTerm + '%')
-                    || EF.Functions.ILike(s.ImoNo.ToString(), searchTerm + '%')
-                    || EF.Functions.ILike(s.MmsiNo.ToString(), searchTerm + '%')
-                    select s).Include(s => s.ShipStatus).Include(s => s.ShipContact).Take(10).ToList();
+            if (searchTerm.All(c => c >= '0' && c <= '9'))   // Checks if search only contains numbers
+            {
+                searchTerm += '%';
+                return _context.Ship.Where(s =>
+                            EF.Functions.ILike(s.Name, searchTerm)
+                            || EF.Functions.Like(s.CallSign, searchTerm)
+                            || EF.Functions.ILike(s.ImoNo.ToString(), searchTerm)
+                            || EF.Functions.ILike(s.MmsiNo.ToString(), searchTerm))
+                            .Select(s => s)
+                            .Include(s => s.ShipStatus)
+                            .Include(s => s.ShipContact)
+                            .Take(10)
+                            .ToList();
+            }
+            searchTerm += '%';
+            return _context.Ship.Where(s =>
+                        EF.Functions.ILike(s.Name, searchTerm)
+                        || EF.Functions.ILike(s.CallSign, searchTerm))
+                        .Select(s => s)
+                        .Include(s => s.ShipStatus)
+                        .Include(s => s.ShipContact)
+                        .Take(10)
+                        .ToList();
         }
 
         [HttpGet("search/{searchTerm}")]
