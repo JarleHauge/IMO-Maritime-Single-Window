@@ -5,13 +5,13 @@ import { AuthService } from '../../shared/services/auth-service';
 import { LoginService } from '../../shared/services/login.service';
 
 @Injectable()
-export class AuthGuard implements CanActivate {
+export class ErrorGuard implements CanActivate {
 
   constructor(
     private router: Router,
     private authService: AuthService,
-    private loginService: LoginService  )
-    {}
+    private loginService: LoginService
+  ) {}
 
   canActivate(
     next: ActivatedRouteSnapshot,
@@ -28,6 +28,8 @@ export class AuthGuard implements CanActivate {
             this.router.navigate(['/login']);
             return false;
           } else {
+            // TODO: redirect to an error page
+            this.router.navigate(['']);
             return true;
           }
         })
