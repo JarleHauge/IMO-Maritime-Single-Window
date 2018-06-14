@@ -77,10 +77,7 @@ namespace IMOMaritimeSingleWindow.Controllers
                             || EF.Functions.ILike(s.ImoNo.ToString(), searchTerm)
                             || EF.Functions.ILike(s.MmsiNo.ToString(), searchTerm))
                             .Select(s => s)
-                            .Include(s => s.ShipStatus)
-                            .Include(s => s.ShipContact)
                             .Include(s => s.ShipFlagCode.Country)
-                            .Include(s => s.ShipType)
                             .Take(6)
                             .ToList();
             }
@@ -90,10 +87,7 @@ namespace IMOMaritimeSingleWindow.Controllers
                         || EF.Functions.ILike(s.Name, "% " + searchTerm) //search for words in name
                         || EF.Functions.ILike(s.CallSign, searchTerm))
                         .Select(s => s)
-                        .Include(s => s.ShipStatus)
-                        .Include(s => s.ShipContact)
                         .Include(s => s.ShipFlagCode.Country)
-                        .Include(s => s.ShipType)
                         .Take(6)
                         .ToList();
         }
